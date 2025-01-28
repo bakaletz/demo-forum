@@ -17,15 +17,11 @@ public class BasicEntity {
     @JoinColumn(name="created_by")
     private User createdBy;
     private LocalDateTime updatedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="updated_by")
-    private User updatedBy;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
-
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();

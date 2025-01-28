@@ -1,6 +1,6 @@
 package com.example.forum.service;
 
-import com.example.forum.dto.CategoryDTO;
+import com.example.forum.dto.category.CategoryDTO;
 
 import java.util.List;
 

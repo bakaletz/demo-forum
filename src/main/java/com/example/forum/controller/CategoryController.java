@@ -1,7 +1,6 @@
 package com.example.forum.controller;
 
-import com.example.forum.dto.CategoryDTO;
-import com.example.forum.repository.CategoryRepository;
+import com.example.forum.dto.category.CategoryDTO;
 import com.example.forum.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package com.example.forum.service.impl;
 
-import com.example.forum.dto.CategoryDTO;
+import com.example.forum.dto.category.CategoryDTO;
 import com.example.forum.entity.Category;
 import com.example.forum.mapper.CategoryMapper;
 import com.example.forum.repository.CategoryRepository;
