@@ -6,9 +6,10 @@ import com.example.forum.dto.topic.TopicInListDTO;
 import com.example.forum.entity.Category;
 import com.example.forum.entity.Post;
 import com.example.forum.entity.Topic;
-import com.example.forum.entity.User;
 import com.example.forum.repository.PostRepository;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,19 +20,21 @@ import java.util.stream.Collectors;
 public class TopicMapper {
 
 
+
     private TopicMapper() {
-        // Private constructor to prevent instantiation
 
     }
 
-    public static TopicInListDTO toDTO(Topic topic) {
+
+
+
+    public static TopicInListDTO toInListDTO(Topic topic) {
         if (topic == null) {
             return null;
         }
         TopicInListDTO topicDTO = new TopicInListDTO();
         topicDTO.setId(topic.getId());
         topicDTO.setTitle(topic.getTitle());
-
         return topicDTO;
     }
 
@@ -47,7 +50,7 @@ public class TopicMapper {
         topicDTO.setCategory(Optional.ofNullable(category).map(CategoryMapper::toDTO).orElse(null));
 
         List<Topic> children = Optional.ofNullable(topic.getChildren()).orElse(Collections.emptyList());
-        List<TopicInListDTO> childrenDTO = children.stream().map(TopicMapper::toDTO).collect(Collectors.toList());
+        List<TopicInListDTO> childrenDTO = children.stream().map(TopicMapper::toInListDTO).collect(Collectors.toList());
         topicDTO.setChildren(childrenDTO);
 
         List<Post> posts = Optional.ofNullable(topic.getPosts()).orElse(Collections.emptyList());

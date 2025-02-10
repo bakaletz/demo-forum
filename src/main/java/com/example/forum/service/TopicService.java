@@ -9,8 +9,6 @@ public interface TopicService {
 
     List<TopicInListDTO> findAll();
 
-    List<TopicInListDTO> findAllByCategoryId(long categoryId);
-
     TopicDetailsDTO findById(long id);
 
 }

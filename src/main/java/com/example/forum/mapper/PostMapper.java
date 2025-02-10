@@ -20,7 +20,7 @@ public class PostMapper {
         postDTO.setUpdatedAt(post.getUpdatedAt());
 
         Topic topic = post.getTopic();
-        postDTO.setTopic(topic != null ? TopicMapper.toDTO(topic) : null);
+        postDTO.setTopic(topic != null ? TopicMapper.toInListDTO(topic) : null);
 
         User user = post.getCreatedBy();
         postDTO.setCreatedBy(topic != null ? UserMapper.toDTO(user) : null);

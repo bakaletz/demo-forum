@@ -29,16 +29,6 @@ public class TopicController {
                 .body(topicDTOList);
     }
 
-    @GetMapping("/categories/{categoryId}/topics")
-    public ResponseEntity<List<TopicInListDTO>> findAllByCategoryId(@PathVariable long categoryId){
-        List<TopicInListDTO> topicDTOList = topicService.findAllByCategoryId(categoryId);
-        if (topicDTOList == null || topicDTOList.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(topicDTOList);
-    }
 
     @GetMapping("/topics/{id}")
     public ResponseEntity<TopicDetailsDTO> findTopicById(@PathVariable long id){

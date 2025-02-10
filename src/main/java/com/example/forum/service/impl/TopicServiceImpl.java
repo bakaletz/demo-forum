@@ -25,25 +25,29 @@ public class TopicServiceImpl implements TopicService {
         return getDTOListFromList(topicList);
     }
 
-    @Override
-    public List<TopicInListDTO> findAllByCategoryId(long categoryId) {
-        List<Topic> topicList = topicRepository.findAllByCategoryId(categoryId);
-        return getDTOListFromList(topicList);
-    }
 
     private List<TopicInListDTO> getDTOListFromList(List<Topic> topicList) {
         List<TopicInListDTO> topicDTOList = new ArrayList<>();
         for (Topic topic : topicList) {
-            long postCount = postRepository.countByTopicIdIncludingChildren(topic.getId());
-            TopicInListDTO topicDTO = TopicMapper.toDTO(topic);
-            topicDTOList.add(topicDTO);
+            TopicInListDTO topicInListDTO = TopicMapper.toInListDTO(topic);
+            topicDTOList.add(topicInListDTO);
+
         }
         return topicDTOList;
     }
 
     @Override
     public TopicDetailsDTO findById(long id) {
-        Topic topic = topicRepository.findById(id).orElseThrow(() -> new RuntimeException("Topic not found"));
-        return TopicMapper.toDetailsDTO(topic);
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Topic not found"));
+
+        TopicDetailsDTO topicDetailsDTO = TopicMapper.toDetailsDTO(topic);
+
+        // Без перевірки на null, якщо getChildren() завжди повертає список:
+        topicDetailsDTO.getChildren()
+                .forEach(tpc -> tpc.setPostCount(postRepository.countByTopicIdIncludingChildren(tpc.getId())));
+
+        return topicDetailsDTO;
     }
+
 }
