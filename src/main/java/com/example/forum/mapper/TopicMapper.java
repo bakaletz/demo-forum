@@ -6,8 +6,10 @@ import com.example.forum.dto.topic.TopicInListDTO;
 import com.example.forum.entity.Category;
 import com.example.forum.entity.Post;
 import com.example.forum.entity.Topic;
+import com.example.forum.repository.MessageRepository;
 import com.example.forum.repository.PostRepository;
-import jakarta.annotation.PostConstruct;
+import com.example.forum.repository.TopicRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,29 +18,34 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-
+@Component
+@RequiredArgsConstructor
 public class TopicMapper {
 
+    private final CategoryMapper categoryMapper;
+    private final MessageRepository messageRepository;
+    private final TopicRepository topicRepository;
 
+    private PostMapper postMapper;
 
-    private TopicMapper() {
-
+    @Autowired
+    public void setPostMapper(PostMapper postMapper) {
+        this.postMapper = postMapper;
     }
 
-
-
-
-    public static TopicInListDTO toInListDTO(Topic topic) {
+    public TopicInListDTO toInListDTO(Topic topic) {
         if (topic == null) {
             return null;
         }
         TopicInListDTO topicDTO = new TopicInListDTO();
         topicDTO.setId(topic.getId());
         topicDTO.setTitle(topic.getTitle());
+        topicDTO.setPostsCount(topicRepository.countPostsInTopicAndChildren(topic.getId()));
+        topicDTO.setMessagesCount(topicRepository.countMessagesInTopicAndChildren(topic.getId()));
         return topicDTO;
     }
 
-    public static TopicDetailsDTO toDetailsDTO(Topic topic) {
+    public TopicDetailsDTO toDetailsDTO(Topic topic) {
         if (topic == null) {
             return null;
         }
@@ -47,16 +54,15 @@ public class TopicMapper {
         topicDTO.setTitle(topic.getTitle());
 
         Category category = topic.getCategory();
-        topicDTO.setCategory(Optional.ofNullable(category).map(CategoryMapper::toDTO).orElse(null));
+        topicDTO.setCategory(Optional.ofNullable(category).map(categoryMapper::toDTO).orElse(null));
 
         List<Topic> children = Optional.ofNullable(topic.getChildren()).orElse(Collections.emptyList());
-        List<TopicInListDTO> childrenDTO = children.stream().map(TopicMapper::toInListDTO).collect(Collectors.toList());
+        List<TopicInListDTO> childrenDTO = children.stream().map(this::toInListDTO).collect(Collectors.toList());
         topicDTO.setChildren(childrenDTO);
 
         List<Post> posts = Optional.ofNullable(topic.getPosts()).orElse(Collections.emptyList());
-        List<PostInListDTO> postsDTO = posts.stream().map(PostMapper::toDTO).collect(Collectors.toList());
+        List<PostInListDTO> postsDTO = posts.stream().map(postMapper::toInListDTO).collect(Collectors.toList());
         topicDTO.setPosts(postsDTO);
-
 
         return topicDTO;
     }
