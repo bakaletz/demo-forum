@@ -8,5 +8,6 @@ import lombok.Data;
 public class TopicInListDTO {
     private long id;
     private String title;
-    private long postCount;
+    private long postsCount;
+    private long messagesCount;
 }

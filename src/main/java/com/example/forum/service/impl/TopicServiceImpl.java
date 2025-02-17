@@ -18,6 +18,7 @@ import java.util.List;
 public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
     private final PostRepository postRepository;
+    private final TopicMapper topicMapper;
 
     @Override
     public List<TopicInListDTO> findAll() {
@@ -29,7 +30,7 @@ public class TopicServiceImpl implements TopicService {
     private List<TopicInListDTO> getDTOListFromList(List<Topic> topicList) {
         List<TopicInListDTO> topicDTOList = new ArrayList<>();
         for (Topic topic : topicList) {
-            TopicInListDTO topicInListDTO = TopicMapper.toInListDTO(topic);
+            TopicInListDTO topicInListDTO = topicMapper.toInListDTO(topic);
             topicDTOList.add(topicInListDTO);
 
         }
@@ -41,11 +42,7 @@ public class TopicServiceImpl implements TopicService {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Topic not found"));
 
-        TopicDetailsDTO topicDetailsDTO = TopicMapper.toDetailsDTO(topic);
-
-        // Без перевірки на null, якщо getChildren() завжди повертає список:
-        topicDetailsDTO.getChildren()
-                .forEach(tpc -> tpc.setPostCount(postRepository.countByTopicIdIncludingChildren(tpc.getId())));
+        TopicDetailsDTO topicDetailsDTO = topicMapper.toDetailsDTO(topic);
 
         return topicDetailsDTO;
     }

@@ -18,14 +18,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final PostRepository postRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public List<CategoryDTO> findAll() {
          List<Category> categoryList = categoryRepository.findAll();
          List<CategoryDTO> categoryDTOList = new ArrayList<>();
          for (Category category : categoryList) {
-             CategoryDTO categoryDTO = CategoryMapper.toDTO(category);
-             categoryDTO.getTopics().forEach(topic -> topic.setPostCount(postRepository.countByTopicIdIncludingChildren(topic.getId())));
+             CategoryDTO categoryDTO = categoryMapper.toDTO(category);
              categoryDTOList.add(categoryDTO);
 
          }

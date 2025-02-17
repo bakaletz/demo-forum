@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Lazy
 public class PostMapper {
 
     private final TopicMapper topicMapper;

@@ -15,5 +15,4 @@ public class TopicDetailsDTO {
     private Topic parent;
     private List<TopicInListDTO> children;
     private List<PostInListDTO> posts;
-    private long postCount;
 }

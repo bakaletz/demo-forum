@@ -82,3 +82,16 @@ INSERT INTO post(title, is_locked, is_pinned,created_by,topic) VALUES
                                                                        ('Post', false, false, 1,1),
                                                                        ('TestPost', false, true, 2,1),
                                                                        ('TestInner', true, false, 1,2);
+
+CREATE TABLE message (
+                          id SERIAL PRIMARY KEY,
+                          post_id INTEGER NOT NULL,
+                          text TEXT NOT NULL,
+                          created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+                          created_by INT NOT NULL,
+                          updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+                          updated_by INT,
+                          FOREIGN KEY (created_by) REFERENCES "user" (id),
+                          FOREIGN KEY (updated_by) REFERENCES "user" (id),
+                          FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE
+);

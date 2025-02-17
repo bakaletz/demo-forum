@@ -7,15 +7,13 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class PostInListDTO {
+public class PostDTO {
     private long id;
     private String title;
     private boolean isLocked;
     private boolean isPinned;
     private TopicInListDTO topic;
-    private long replies;
     private UserDTO createdBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
 }
