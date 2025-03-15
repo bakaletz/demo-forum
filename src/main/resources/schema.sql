@@ -1,11 +1,14 @@
-DROP TABLE IF EXISTS "post";
-DROP TABLE IF EXISTS "topic";
-DROP TABLE IF EXISTS "category";
-DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS "message" cascade ;
+DROP TABLE IF EXISTS "post" cascade;
+DROP TABLE IF EXISTS "topic" cascade;
+DROP TABLE IF EXISTS "category" cascade;
+DROP TABLE IF EXISTS "user_roles" cascade;
+DROP TABLE IF EXISTS "role" cascade;
+DROP TABLE IF EXISTS "users" cascade;
 
 
 -- Створення таблиці "user"
-CREATE TABLE "user" (
+CREATE TABLE users (
                         id SERIAL PRIMARY KEY,
                         username VARCHAR(255) NOT NULL UNIQUE,
                         email VARCHAR(255) NOT NULL UNIQUE,
@@ -16,11 +19,11 @@ CREATE TABLE "user" (
 );
 
 -- Створення індексів для підвищення продуктивності
-CREATE INDEX idx_username ON "user" (username);
-CREATE INDEX idx_email ON "user" (email);
+CREATE INDEX idx_username ON users (username);
+CREATE INDEX idx_email ON users (email);
 
 -- Вставка даних в таблицю "user"
-INSERT INTO "user" (username,email,password,last_login,avatar) VALUES
+INSERT INTO users (username,email,password,last_login,avatar) VALUES
                                                                    ('Test','test@mail.com','23123',CURRENT_TIMESTAMP,NULL),
                                                                    ('Test2','test2@mail.com','23123',CURRENT_TIMESTAMP,NULL);
 
@@ -33,8 +36,8 @@ CREATE TABLE category (
                           created_by INT,
                           updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                           updated_by INT,
-                          FOREIGN KEY (created_by) REFERENCES "user" (id),
-                          FOREIGN KEY (updated_by) REFERENCES "user" (id)
+                          FOREIGN KEY (created_by) REFERENCES users (id),
+                          FOREIGN KEY (updated_by) REFERENCES users (id)
 );
 
 -- Вставка даних в таблицю "category"
@@ -52,8 +55,8 @@ CREATE TABLE topic (
                        created_by INT NOT NULL ,
                        updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                        updated_by INT,
-                       FOREIGN KEY (created_by) REFERENCES "user" (id),
-                       FOREIGN KEY (updated_by) REFERENCES "user" (id),
+                       FOREIGN KEY (created_by) REFERENCES users (id),
+                       FOREIGN KEY (updated_by) REFERENCES users (id),
                        FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE CASCADE,
                        FOREIGN KEY (parent_topic_id) REFERENCES topic (id) ON DELETE SET NULL
 );
@@ -73,8 +76,8 @@ CREATE TABLE post (
                       created_by INT NOT NULL,
                       updated_by INT,
                       topic INT NOT NULL,
-                      FOREIGN KEY (created_by) REFERENCES "user" (id),
-                      FOREIGN KEY (updated_by) REFERENCES "user" (id),
+                      FOREIGN KEY (created_by) REFERENCES users (id),
+                      FOREIGN KEY (updated_by) REFERENCES users (id),
                       FOREIGN KEY (topic) REFERENCES topic (id) ON DELETE CASCADE
 );
 
@@ -91,7 +94,19 @@ CREATE TABLE message (
                           created_by INT NOT NULL,
                           updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
                           updated_by INT,
-                          FOREIGN KEY (created_by) REFERENCES "user" (id),
-                          FOREIGN KEY (updated_by) REFERENCES "user" (id),
+                          FOREIGN KEY (created_by) REFERENCES users (id),
+                          FOREIGN KEY (updated_by) REFERENCES users (id),
                           FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE
 );
+
+CREATE TABLE role (
+                       id SERIAL PRIMARY KEY,
+                       name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE user_roles (
+                            user_id INT REFERENCES users(id) ON DELETE CASCADE,
+                            role_id INT REFERENCES role(id) ON DELETE CASCADE,
+                            PRIMARY KEY (user_id, role_id)
+);
+
