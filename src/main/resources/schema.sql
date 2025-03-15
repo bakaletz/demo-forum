@@ -24,8 +24,8 @@ CREATE INDEX idx_email ON users (email);
 
 -- Вставка даних в таблицю "user"
 INSERT INTO users (username,email,password,last_login,avatar) VALUES
-                                                                   ('Test','test@mail.com','23123',CURRENT_TIMESTAMP,NULL),
-                                                                   ('Test2','test2@mail.com','23123',CURRENT_TIMESTAMP,NULL);
+                                                                   ('Test','test@mail.com','{bcrypt}$2a$12$hzz38rS8hPaaVTbjrh4HvuTs6myDpWQJPO5Gwn7vKTK91aqI2ZDxu',CURRENT_TIMESTAMP,NULL),
+                                                                   ('Test2','test2@mail.com','{bcrypt}$2a$12$Rd76WTgj2MUJ7gVzfrsyCeEgiwa9rprDl35QCmnm/UDmDsN8lNag.',CURRENT_TIMESTAMP,NULL);
 
 -- Створення таблиці "category"
 CREATE TABLE category (
@@ -103,10 +103,19 @@ CREATE TABLE role (
                        id SERIAL PRIMARY KEY,
                        name VARCHAR(50) UNIQUE NOT NULL
 );
+INSERT INTO role(name) VALUES
+                                                                   ('ROLE_USER' ),
+                                                                ('ROLE_ADMIN');
+
 
 CREATE TABLE user_roles (
                             user_id INT REFERENCES users(id) ON DELETE CASCADE,
                             role_id INT REFERENCES role(id) ON DELETE CASCADE,
                             PRIMARY KEY (user_id, role_id)
 );
+
+INSERT INTO user_roles(user_id, role_id) VALUES
+                                                                   (1, 1),
+                                                                   (2, 2);
+
 
