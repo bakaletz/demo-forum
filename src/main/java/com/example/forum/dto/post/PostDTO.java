@@ -1,6 +1,6 @@
 package com.example.forum.dto.post;
 
-import com.example.forum.dto.UserDTO;
+import com.example.forum.dto.user.UserDTO;
 import com.example.forum.dto.topic.TopicInListDTO;
 import lombok.Data;
 

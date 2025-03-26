@@ -1,8 +1,7 @@
 package com.example.forum.dto.message;
 
-import com.example.forum.dto.UserDTO;
+import com.example.forum.dto.user.UserDTO;
 import com.example.forum.dto.post.PostDTO;
-import com.example.forum.dto.post.PostInListDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
