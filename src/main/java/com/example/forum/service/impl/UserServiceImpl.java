@@ -4,6 +4,7 @@ import com.example.forum.constants.ApplicationConstants;
 import com.example.forum.dto.LoginRequestDTO;
 import com.example.forum.dto.topic.TopicDetailsDTO;
 import com.example.forum.dto.user.UserDTO;
+import com.example.forum.dto.user.UserRegisterDTO;
 import com.example.forum.entity.Topic;
 import com.example.forum.entity.User;
 import com.example.forum.mapper.UserMapper;
@@ -17,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -31,6 +33,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final Environment env;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDTO findUser(Authentication authentication) {
@@ -63,4 +66,25 @@ public class UserServiceImpl implements UserService {
         }
         return jwt;
     }
+
+    @Override
+    public String registerUser(UserRegisterDTO userDTO) {
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new IllegalArgumentException("Username already taken");
+        }
+        User user = new User();
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setAvatar("/uploads/default-avatar.png");
+        User savedUser = userRepository.save(user);
+
+        if (savedUser.getId() > 0) {
+            return "User successfully registered";
+        } else {
+            throw new IllegalArgumentException("User registration failed");
+        }
+    }
 }
+
+
