@@ -28,8 +28,7 @@ public class UserMapper {
         userDTO.setCreatedAt(user.getCreatedAt());
         userDTO.setLastLogin(user.getLastLogin());
         userDTO.setAvatar(user.getAvatar());
-        Set<Role> roles = Optional.ofNullable(user.getRoles()).orElse(Collections.emptySet());
-        userDTO.setRole(roles);
+        userDTO.setRole(user.getRole());
         return userDTO;
     }
 }

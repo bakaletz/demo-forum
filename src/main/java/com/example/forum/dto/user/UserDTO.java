@@ -15,5 +15,5 @@ public class UserDTO {
     private LocalDateTime createdAt;
     private LocalDateTime lastLogin;
     private String avatar;
-    private Set<Role> role;
+    private Role role;
 }

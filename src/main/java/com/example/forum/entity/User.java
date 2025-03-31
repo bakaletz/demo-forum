@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Data
@@ -19,15 +18,13 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime lastLogin;
     private String avatar;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+
+    @ManyToOne
+    @JoinColumn(name = "role", nullable = false)
+    private Role role;
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
-
 }
