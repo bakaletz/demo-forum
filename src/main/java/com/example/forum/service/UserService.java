@@ -14,4 +14,6 @@ public interface UserService {
     String authenticateAndGenerateToken(LoginRequestDTO loginRequest);
 
     String registerUser(UserRegisterDTO userDTO);
+
+    UserDTO findById(long id);
 }

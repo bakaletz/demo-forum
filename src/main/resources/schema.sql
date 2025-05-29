@@ -2,10 +2,17 @@ DROP TABLE IF EXISTS "message" cascade ;
 DROP TABLE IF EXISTS "post" cascade;
 DROP TABLE IF EXISTS "topic" cascade;
 DROP TABLE IF EXISTS "category" cascade;
-DROP TABLE IF EXISTS "user_roles" cascade;
 DROP TABLE IF EXISTS "role" cascade;
 DROP TABLE IF EXISTS "users" cascade;
 
+
+CREATE TABLE role (
+                      id SERIAL PRIMARY KEY,
+                      name VARCHAR(50) UNIQUE NOT NULL
+);
+INSERT INTO role(name) VALUES
+                           ('ROLE_USER' ),
+                           ('ROLE_ADMIN');
 
 -- Створення таблиці "user"
 CREATE TABLE users (
@@ -15,17 +22,22 @@ CREATE TABLE users (
                         password TEXT NOT NULL,                -- Використовуємо TEXT замість VARCHAR
                         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,  -- Використовуємо TIMESTAMPTZ
                         last_login TIMESTAMPTZ DEFAULT NULL,   -- Додаємо NULL як значення за замовчуванням
-                        avatar VARCHAR(255)
+                        avatar VARCHAR(255),
+                        role INT NOT NULL ,
+                        FOREIGN KEY (role) REFERENCES role (id)
 );
+
 
 -- Створення індексів для підвищення продуктивності
 CREATE INDEX idx_username ON users (username);
 CREATE INDEX idx_email ON users (email);
 
 -- Вставка даних в таблицю "user"
-INSERT INTO users (username,email,password,last_login,avatar) VALUES
-                                                                   ('Test','test@mail.com','{bcrypt}$2a$12$hzz38rS8hPaaVTbjrh4HvuTs6myDpWQJPO5Gwn7vKTK91aqI2ZDxu',CURRENT_TIMESTAMP,NULL),
-                                                                   ('Test2','test2@mail.com','{bcrypt}$2a$12$Rd76WTgj2MUJ7gVzfrsyCeEgiwa9rprDl35QCmnm/UDmDsN8lNag.',CURRENT_TIMESTAMP,NULL);
+INSERT INTO users (username,email,password,last_login,avatar,role) VALUES
+                                                                   ('Test','test@mail.com','{bcrypt}$2a$12$hzz38rS8hPaaVTbjrh4HvuTs6myDpWQJPO5Gwn7vKTK91aqI2ZDxu',CURRENT_TIMESTAMP,'uploads/default-avatar.png',1),
+                                                                   ('Test2','test2@mail.com','{bcrypt}$2a$12$Rd76WTgj2MUJ7gVzfrsyCeEgiwa9rprDl35QCmnm/UDmDsN8lNag.',CURRENT_TIMESTAMP,'uploads/040102230424.jpg',1),
+                                                                   ('Admin', 'admin@mail.com', '{bcrypt}$2a$12$Ix8T/tRxQ4chk7uBN/GgR.MEebpZ4ZGaI/f6kHqwwQW0RmR0zPU7W', CURRENT_TIMESTAMP, 'uploads/095439174129.jpg', 2);
+
 
 -- Створення таблиці "category"
 CREATE TABLE category (
@@ -99,23 +111,14 @@ CREATE TABLE message (
                           FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE
 );
 
-CREATE TABLE role (
-                       id SERIAL PRIMARY KEY,
-                       name VARCHAR(50) UNIQUE NOT NULL
-);
-INSERT INTO role(name) VALUES
-                                                                   ('ROLE_USER' ),
-                                                                ('ROLE_ADMIN');
+INSERT INTO message (post_id, text, created_by, updated_by) VALUES
+                                                                (1, 'This is the first message in Post.', 1, 1),
+                                                                (1, 'Another message in Post.', 2, 2),
+                                                                (2, 'Message in TestPost.', 2, 2),
+                                                                (2, 'Second message in TestPost.', 1, 1),
+                                                                (3, 'First message in TestInner.', 1, 1),
+                                                                (3, 'Another message in TestInner.', 2, 2);
 
 
-CREATE TABLE user_roles (
-                            user_id INT REFERENCES users(id) ON DELETE CASCADE,
-                            role_id INT REFERENCES role(id) ON DELETE CASCADE,
-                            PRIMARY KEY (user_id, role_id)
-);
-
-INSERT INTO user_roles(user_id, role_id) VALUES
-                                                                   (1, 1),
-                                                                   (2, 2);
 
 

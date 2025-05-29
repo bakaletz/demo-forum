@@ -85,6 +85,14 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User registration failed");
         }
     }
+
+    @Override
+    public UserDTO findById(long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Topic not found"));
+
+        return UserMapper.toDTO(user);
+    }
 }
 
 

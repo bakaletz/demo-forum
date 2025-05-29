@@ -1,15 +1,19 @@
 package com.example.forum.mapper;
 
+import com.example.forum.dto.message.LastMessageDTO;
+import com.example.forum.dto.message.MessageDetailsDTO;
 import com.example.forum.dto.post.PostInListDTO;
 import com.example.forum.dto.topic.TopicDetailsDTO;
 import com.example.forum.dto.topic.TopicInListDTO;
 import com.example.forum.entity.Category;
+import com.example.forum.entity.Message;
 import com.example.forum.entity.Post;
 import com.example.forum.entity.Topic;
 import com.example.forum.repository.MessageRepository;
 import com.example.forum.repository.PostRepository;
 import com.example.forum.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +27,19 @@ import java.util.stream.Collectors;
 public class TopicMapper {
 
     private final CategoryMapper categoryMapper;
-    private final MessageRepository messageRepository;
     private final TopicRepository topicRepository;
 
     private PostMapper postMapper;
+    private MessageMapper messageMapper;
 
     @Autowired
     public void setPostMapper(PostMapper postMapper) {
         this.postMapper = postMapper;
+    }
+
+    @Autowired
+    public void setMessageMapper(MessageMapper messageMapper) {
+        this.messageMapper = messageMapper;
     }
 
     public TopicInListDTO toInListDTO(Topic topic) {
@@ -42,6 +51,9 @@ public class TopicMapper {
         topicDTO.setTitle(topic.getTitle());
         topicDTO.setPostsCount(topicRepository.countPostsInTopicAndChildren(topic.getId()));
         topicDTO.setMessagesCount(topicRepository.countMessagesInTopicAndChildren(topic.getId()));
+
+        Message lastMessage = topicRepository.findLatestMessageInTopicAndChildren(topic.getId());
+        topicDTO.setLastMessage(lastMessage != null ? messageMapper.toLastMessageDTO(lastMessage): null);
         return topicDTO;
     }
 
